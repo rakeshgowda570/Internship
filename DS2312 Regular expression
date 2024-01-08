@@ -1,0 +1,155 @@
+Question 1- Write a RegEx pattern in a python program to check that a string contains only a certain set of characters (in this case a-z, A-Z and 0-9).
+
+import re
+def is_valid_string(input_string):
+    # Define the regular expression pattern
+    pattern = re.compile(r'^[a-zA-Z0-9]+$')
+
+    # Use the pattern to check if the string matches
+    if pattern.match(input_string):
+        return True
+    else:
+        return False
+
+# Example usage:
+test_string = "Hello123"
+if is_valid_string(test_string):
+    print(f'The string "{test_string}" is valid.')
+else:
+    print(f'The string "{test_string}" contains invalid characters.')
+
+
+Question 2- Write a RegEx pattern that matches a string that has an a followed by zero or more b's
+
+Answer:
+import re
+
+pattern = re.compile(r'ab*')
+
+# Test the pattern with some examples
+test_strings = ["a", "ab", "abb", "ac", "abc", "abcd"]
+for test_string in test_strings:
+    if pattern.match(test_string):
+        print(f'Match: "{test_string}"')
+    else:
+        print(f'No match: "{test_string}"')
+
+Question 3-  Write a RegEx pattern that matches a string that has an a followed by one or more b's
+
+Answer:
+import re
+
+pattern = re.compile(r'ab+')
+
+# Test the pattern with some examples
+test_strings = ["a", "ab", "abb", "ac", "abc", "abcd"]
+for test_string in test_strings:
+    if pattern.search(test_string):
+        print(f'Match: "{test_string}"')
+    else:
+        print(f'No match: "{test_string}"')
+
+Question 4- Write a RegEx pattern that matches a string that has an a followed by zero or one 'b'.
+Answer:
+import re
+
+pattern = re.compile(r'ab?')
+
+# Test the pattern with some examples
+test_strings = ["a", "ab", "ac", "abc", "abcd"]
+for test_string in test_strings:
+    if pattern.search(test_string):
+        print(f'Match: "{test_string}"')
+    else:
+        print(f'No match: "{test_string}"')
+
+Question 5- Write a RegEx pattern in python program that matches a string that has an a followed by three 'b'.
+Answer:
+import re
+
+pattern = re.compile(r'ab{3}')
+
+# Test the pattern with some examples
+test_strings = ["abbb", "abb", "a", "abcd", "abbbb"]
+for test_string in test_strings:
+    if pattern.search(test_string):
+        print(f'Match: "{test_string}"')
+    else:
+        print(f'No match: "{test_string}"')
+
+Question 6- Write a RegEx pattern in python program that matches a string that has an a followed by two to three 'b'.
+
+Answer:
+import re
+
+pattern = re.compile(r'ab{2,3}')
+
+# Test the pattern with some examples
+test_strings = ["abb", "abbb", "abbbb", "a", "abcd"]
+for test_string in test_strings:
+    if pattern.search(test_string):
+        print(f'Match: "{test_string}"')
+    else:
+        print(f'No match: "{test_string}"')
+
+Question 7- Write a Python program that matches a string that has an 'a' followed by anything, ending in 'b'.
+Answer:
+import re
+
+pattern = re.compile(r'a.*b$')
+
+# Test the pattern with some examples
+test_strings = ["acb", "ab", "a123b", "a", "abcd"]
+for test_string in test_strings:
+    if pattern.search(test_string):
+        print(f'Match: "{test_string}"')
+    else:
+        print(f'No match: "{test_string}"')
+
+Question 8- Write a RegEx pattern in python program that matches a word at the beginning of a string.
+
+Answer:
+import re
+
+pattern = re.compile(r'^\w+')
+
+# Test the pattern with some examples
+test_strings = ["Hello World", "12345", "   LeadingSpace", "!@#$Special", "NoMatch"]
+for test_string in test_strings:
+    match = pattern.search(test_string)
+    if match:
+        matched_word = match.group()
+        print(f'Match: "{matched_word}" in "{test_string}"')
+    else:
+        print(f'No match: "{test_string}"')
+
+Question 9- Write a RegEx pattern in python program that matches a word at the end of a string.
+
+Answer:
+import re
+
+pattern = re.compile(r'\w+$')
+
+# Test the pattern with some examples
+test_strings = ["Hello World", "12345", "TrailingSpace   ", "!@#$Special", "NoMatch"]
+for test_string in test_strings:
+    match = pattern.search(test_string)
+    if match:
+        matched_word = match.group()
+        print(f'Match: "{matched_word}" in "{test_string}"')
+    else:
+        print(f'No match: "{test_string}"')
+
+Question 10- Write a RegEx pattern in python program to find all words that are 4 digits long in a string.
+Sample text- '01 0132 231875 1458 301 2725.'
+Expected output- ['0132', '1458', '2725']
+
+Answer:
+import re
+
+text = '01 0132 231875 1458 301 2725.'
+pattern = re.compile(r'\b\d{4}\b')
+
+matches = pattern.findall(text)
+
+print(f'Words with 4 digits: {matches}')

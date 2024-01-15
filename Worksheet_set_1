@@ -1,0 +1,91 @@
+Write a python program to find the factorial of a number.
+
+def factorial(n):
+    if n == 0 or n == 1:
+        return 1
+    else:
+        return n * factorial(n - 1)
+
+# Input: Take user input for the number
+num = int(input("Enter a number to find its factorial: "))
+
+# Calculate and display the factorial
+result = factorial(num)
+print(f"The factorial of {num} is: {result}")
+
+
+Write a python program to find whether a number is prime or composite.
+
+def is_prime(num):
+    if num < 2:
+        return False
+    for i in range(2, int(num**0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
+
+# Input: Take user input for the number
+num = int(input("Enter a number: "))
+
+# Check and display whether the number is prime or composite
+if is_prime(num):
+    print(f"{num} is a prime number.")
+else:
+    print(f"{num} is a composite number.")
+
+Write a python program to check whether a given string is palindrome or not.
+def is_palindrome(s):
+    # Remove spaces and convert to lowercase for case-insensitive comparison
+    s = s.replace(" ", "").lower()
+    
+    # Compare the original string with its reverse
+    return s == s[::-1]
+
+# Input: Take user input for the string
+input_string = input("Enter a string to check if it's a palindrome: ")
+
+# Check and display whether the string is a palindrome
+if is_palindrome(input_string):
+    print(f"{input_string} is a palindrome.")
+else:
+    print(f"{input_string} is not a palindrome.")
+
+Write a Python program to get the third side of right-angled triangle from two given sides.
+
+def calculate_third_side(side1, side2):
+    # Pythagorean theorem: c^2 = a^2 + b^2
+    third_side = (side1**2 + side2**2)**0.5
+    return third_side
+
+# Input: Take user input for the two sides
+side1 = float(input("Enter the length of the first side: "))
+side2 = float(input("Enter the length of the second side: "))
+
+# Calculate and display the length of the third side
+third_side = calculate_third_side(side1, side2)
+print(f"The length of the third side is: {third_side}")
+
+Write a python program to print the frequency of each of the characters present in a given string.
+
+
+def character_frequency(input_string):
+    # Initialize an empty dictionary to store character frequencies
+    freq_dict = {}
+
+    # Count the frequency of each character
+    for char in input_string:
+        if char in freq_dict:
+            freq_dict[char] += 1
+        else:
+            freq_dict[char] = 1
+
+    # Print the frequency of each character
+    for char, frequency in freq_dict.items():
+        print(f"Character '{char}' appears {frequency} times.")
+
+# Input: Take user input for the string
+input_string = input("Enter a string: ")
+
+# Call the function to print character frequencies
+character_frequency(input_string)
+

@@ -1,0 +1,331 @@
+Write a python program to display all the header tags from wikipedia.org and make data frame.
+
+Answer: 
+ import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+def get_wikipedia_headers(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        headers = [header.text.strip() for header in soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])]
+        return headers
+    else:
+        print(f"Failed to fetch the content. Status Code: {response.status_code}")
+        return None
+
+def create_dataframe(headers):
+    data = {'Headers': headers}
+    df = pd.DataFrame(data)
+    return df
+
+if __name__ == "__main__":
+    wikipedia_url = "https://en.wikipedia.org/wiki/Main_Page"
+    
+    headers = get_wikipedia_headers(wikipedia_url)
+
+    if headers:
+        df = create_dataframe(headers)
+        print(df)
+
+
+
+
+
+
+Write s python program to display list of respected former presidents of India(i.e. Name , Term ofoffice) from https://presidentofindia.nic.in/former-presidents.htm and make data frame.
+
+Answer:
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+def get_former_presidents(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        presidents_list = []
+        for president_div in soup.find_all('div', class_='views-row'):
+            name = president_div.find('h2').text.strip()
+            term_of_office = president_div.find('div', class_='views-field-field-term-office').text.strip()
+            presidents_list.append({'Name': name, 'Term of Office': term_of_office})
+        return presidents_list
+    else:
+        print(f"Failed to fetch the content. Status Code: {response.status_code}")
+        return None
+
+def create_dataframe(presidents_list):
+    df = pd.DataFrame(presidents_list)
+    return df
+
+if __name__ == "__main__":
+    url = "https://presidentofindia.nic.in/former-presidents.htm"
+    
+    former_presidents_list = get_former_presidents(url)
+
+    if former_presidents_list:
+        df = create_dataframe(former_presidents_list)
+        print(df)
+
+
+
+Write a python program to scrape cricket rankings from icc-cricket.com. You have to scrape and make data frame-
+Top 10 ODI teams in men’s cricket along with the records for matches, points and rating.
+Top 10 ODI Batsmen along with the records of their team andrating.
+Top 10 ODI bowlers along with the records of their team andrating.
+
+Answer:
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+def get_odi_teams(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        teams_data = []
+        for team_row in soup.select('.rankings-block__banner, .table-body'):
+            team_name = team_row.select_one('.u-hide-phablet').text.strip()
+            matches = team_row.select_one('.rankings-block__banner--matches, .table-body__cell.u-center-text').text.strip()
+            points = team_row.select_one('.rankings-block__banner--points, .table-body__cell.u-center-text').text.strip()
+            rating = team_row.select_one('.rankings-block__banner--rating, .table-body__cell.u-text-right').text.strip()
+            teams_data.append({'Team': team_name, 'Matches': matches, 'Points': points, 'Rating': rating})
+        return teams_data[:10]  # Top 10 teams
+    else:
+        print(f"Failed to fetch the content. Status Code: {response.status_code}")
+        return None
+
+def get_odi_players(url, player_type):
+    response = requests.get(url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        players_data = []
+        for player_row in soup.select('.table-body .table-body__row, .rankings-block__banner .rankings-block__top-player'):
+            player_name = player_row.select_one('.table-body__cell.name, .u-text-left a').text.strip()
+            team = player_row.select_one('.table-body__logo-text, .rankings-block__banner--nationality').text.strip()
+            rating = player_row.select_one('.table-body__cell.rating, .rankings-block__banner--rating').text.strip()
+            players_data.append({'Player': player_name, 'Team': team, 'Rating': rating})
+        return players_data[:10]  # Top 10 players
+    else:
+        print(f"Failed to fetch the content. Status Code: {response.status_code}")
+        return None
+
+if __name__ == "__main__":
+    odi_teams_url = "https://www.icc-cricket.com/rankings/mens/team-rankings/odi"
+    odi_batsmen_url = "https://www.icc-cricket.com/rankings/mens/player-rankings/odi/batting"
+    odi_bowlers_url = "https://www.icc-cricket.com/rankings/mens/player-rankings/odi/bowling"
+
+    teams_data = get_odi_teams(odi_teams_url)
+    batsmen_data = get_odi_players(odi_batsmen_url, 'batting')
+    bowlers_data = get_odi_players(odi_bowlers_url, 'bowling')
+
+    if teams_data and batsmen_data and bowlers_data:
+        teams_df = pd.DataFrame(teams_data)
+        batsmen_df = pd.DataFrame(batsmen_data)
+        bowlers_df = pd.DataFrame(bowlers_data)
+
+        print("Top 10 ODI Teams:")
+        print(teams_df)
+
+        print("\nTop 10 ODI Batsmen:")
+        print(batsmen_df)
+
+        print("\nTop 10 ODI Bowlers:")
+                              print(bowlers_df)
+
+
+
+Write a python program to scrape cricket rankings from icc-cricket.com. You have to scrape and make data frame-
+Top 10 ODI teams in women’s cricket along with the records for matches, points and rating.
+Top 10 women’s ODI Batting players along with the records of their team and rating.
+Top 10 women’s ODI all-rounder along with the records of their team and rating.
+
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+def get_odi_teams(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        teams_data = []
+        for team_row in soup.select('.rankings-block__banner, .table-body'):
+            team_name = team_row.select_one('.u-hide-phablet').text.strip()
+            matches = team_row.select_one('.rankings-block__banner--matches, .table-body__cell.u-center-text').text.strip()
+            points = team_row.select_one('.rankings-block__banner--points, .table-body__cell.u-center-text').text.strip()
+            rating = team_row.select_one('.rankings-block__banner--rating, .table-body__cell.u-text-right').text.strip()
+            teams_data.append({'Team': team_name, 'Matches': matches, 'Points': points, 'Rating': rating})
+        return teams_data[:10]  # Top 10 teams
+    else:
+        print(f"Failed to fetch the content. Status Code: {response.status_code}")
+        return None
+
+def get_odi_players(url, player_type):
+    response = requests.get(url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        players_data = []
+        for player_row in soup.select('.table-body .table-body__row, .rankings-block__banner .rankings-block__top-player'):
+            player_name = player_row.select_one('.table-body__cell.name, .u-text-left a').text.strip()
+            team = player_row.select_one('.table-body__logo-text, .rankings-block__banner--nationality').text.strip()
+            rating = player_row.select_one('.table-body__cell.rating, .rankings-block__banner--rating').text.strip()
+            players_data.append({'Player': player_name, 'Team': team, 'Rating': rating})
+        return players_data[:10]  # Top 10 players
+    else:
+        print(f"Failed to fetch the content. Status Code: {response.status_code}")
+        return None
+
+if __name__ == "__main__":
+    odi_teams_url = "https://www.icc-cricket.com/rankings/mens/team-rankings/odi"
+    odi_batsmen_url = "https://www.icc-cricket.com/rankings/mens/player-rankings/odi/batting"
+    odi_bowlers_url = "https://www.icc-cricket.com/rankings/mens/player-rankings/odi/bowling"
+
+    teams_data = get_odi_teams(odi_teams_url)
+    batsmen_data = get_odi_players(odi_batsmen_url, 'batting')
+    bowlers_data = get_odi_players(odi_bowlers_url, 'bowling')
+
+    if teams_data and batsmen_data and bowlers_data:
+        teams_df = pd.DataFrame(teams_data)
+        batsmen_df = pd.DataFrame(batsmen_data)
+        bowlers_df = pd.DataFrame(bowlers_data)
+
+        print("Top 10 ODI Teams:")
+        print(teams_df)
+
+        print("\nTop 10 ODI Batsmen:")
+        print(batsmen_df)
+
+        print("\nTop 10 ODI Bowlers:")
+        print(bowlers_df)
+
+
+
+
+Write a python program to scrape mentioned news details from https://www.cnbc.com/world/?region=world and make data frame-
+Headline
+Time
+News Link
+
+Answer:
+
+
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+def get_cnbc_news(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        news_data = []
+        for news_item in soup.find_all('div', class_='Card-titleContainer'):
+            headline = news_item.find('a', class_='Card-title').text.strip()
+            time = news_item.find('time').text.strip()
+            news_link = "https://www.cnbc.com" + news_item.find('a', class_='Card-title')['href']
+            news_data.append({'Headline': headline, 'Time': time, 'News Link': news_link})
+        return news_data
+    else:
+        print(f"Failed to fetch the content. Status Code: {response.status_code}")
+        return None
+
+if __name__ == "__main__":
+    cnbc_url = "https://www.cnbc.com/world/?region=world"
+
+    news_data = get_cnbc_news(cnbc_url)
+
+    if news_data:
+        news_df = pd.DataFrame(news_data)
+        print("CNBC World News:")
+        print(news_df)
+
+
+
+Write a python program to scrape the details of most downloaded articles from AI in last 90 days.https://www.journals.elsevier.com/artificial-intelligence/most-downloaded-articles Scrape below mentioned details and make data frame-
+Paper Title
+Authors
+Published Date
+Paper URL
+
+Answer:
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+def get_ai_journal_articles(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        articles_data = []
+        for article_item in soup.select('.article-item-content'):
+            title = article_item.find('a', class_='article-item-title').text.strip()
+            authors = ', '.join([author.text.strip() for author in article_item.select('.author-list span a')])
+            published_date = article_item.select_one('.article-item-acceptance-date').text.strip()
+            paper_url = "https://www.journals.elsevier.com" + article_item.find('a',class_='article-item-title')['href']
+            articles_data.append({'Paper Title': title, 'Authors': authors, 'Published Date': published_date, 'Paper
+URL': paper_url})
+        return articles_data
+    else:
+        print(f"Failed to fetch the content. Status Code: {response.status_code}")
+        return None
+
+if __name__ == "__main__":
+    ai_journal_url = "https://www.journals.elsevier.com/artificial-intelligence/most-downloaded-articles"
+
+    articles_data = get_ai_journal_articles(ai_journal_url)
+
+    if articles_data:
+        articles_df = pd.DataFrame(articles_data)
+        print("Most Downloaded Articles in AI (Last 90 Days):")
+        print(articles_df)
+
+
+
+Write a python program to scrape mentioned details from dineout.co.in and make data frame-
+Restaurant name
+Cuisine
+Location
+Ratings
+Image URL
+
+Answer:
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+def get_dineout_data(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        restaurant_data = []
+
+        for restaurant_item in soup.select('.restntInfo'):
+            name = restaurant_item.select_one('.restntName').text.strip()
+            cuisine = restaurant_item.select_one('.double-line-ellipsis').text.strip()
+            location = restaurant_item.select_one('.restntLocal').text.strip()
+            ratings = restaurant_item.select_one('.restnt-rating span').text.strip()
+            image_url = restaurant_item.select_one('.restnt-image img')['src']
+
+            restaurant_data.append({
+                'Restaurant Name': name,
+                'Cuisine': cuisine,
+                'Location': location,
+                'Ratings': ratings,
+                'Image URL': image_url
+            })
+
+        return restaurant_data
+    else:
+        print(f"Failed to fetch the content. Status Code: {response.status_code}")
+        return None
+
+if __name__ == "__main__":
+    dineout_url = "https://www.dineout.co.in/delhi-restaurants"
+
+    dineout_data = get_dineout_data(dineout_url)
+
+    if dineout_data:
+        dineout_df = pd.DataFrame(dineout_data)
+        print("Dineout Restaurants Data:")
+        print(dineout_df)
+
